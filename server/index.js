@@ -8,7 +8,9 @@ var server = {
   ip4v:void 0,
   protocal:"http",
   port:9111
-}
+};
+
+var recently = [];
 
 
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
@@ -23,13 +25,19 @@ http.listen(server.port,function(){
 app.use("/",express.static(path.resolve(__dirname,'../public')));
 
 app.get("/mount",function(req,res){
-  var mountdata = {server:server};
+  var mountdata = {server:server,recently:recently};
   res.status(200).send("window.hotline="+JSON.stringify(mountdata));
 });
 
 var connection = io.on("connection", function(socket){
   socket.on("hot:create",function(data){
     console.log("== hot:created == \n",data);
+    recently.splice(0,0,data);
+    
+    if(recently.length > 10) {
+      recently.splice(11,1);
+    }
+    
     connection.emit("hot:created",data);
   });
 });

@@ -49,6 +49,9 @@
         }.bind(this));
         
         Vue.set(this,"server",window.hotline.server);
+        Vue.set(this,"assets",window.hotline.recently);
+        
+        document.getElementById("textarea").focus();
       }
     });
   </script>
