@@ -13,10 +13,11 @@ var server = {
 
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   server.ip4v = add;  
+  console.log(server.protocal+"://"+server.ip4v+":"+server.port);
 });
 
 http.listen(server.port,function(){
-    console.log('Express server listening on ' + server.port);
+    console.log('Express server listening');
 });
 
 app.use("/",express.static(path.resolve(__dirname,'../public')));
