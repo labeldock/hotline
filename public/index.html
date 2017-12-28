@@ -1,0 +1,56 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <link href="/css/app.css" rel="stylesheet" type="text/css">
+  <script src="/js/vue.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/axios.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/vue-trainman.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/mount"></script>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <header>
+      <span v-if="server">
+        {{server.protocal}}://{{server.ip4v}}:{{server.port}}
+      </span>
+    </header>
+    <textarea id="textarea" v-model="textarea" @keyup.enter="emitTextarea($event)"></textarea>
+    <a tabindex="0" @click="emitTextarea()" @keyup.space="emitTextarea()" @keyup.enter="emitTextarea()">emit</a>
+    <ul>
+      <li v-for="item in assets">
+        <pre>{{item}}</pre>
+      </li>
+    </ul>
+  </div>
+        
+  <script>
+    new Vue({
+      el:"#app",
+      methods:{
+        emitTextarea:function(e){
+          if(!(e && e.shiftKey) && this.textarea){
+            this.textarea
+            this.$io.emit("hot:create",this.textarea);
+            this.textarea = "";
+          }
+          document.getElementById("textarea").focus();
+        }
+      },
+      data:{
+        textarea:"",
+        assets:[],
+        server:null,
+      },
+      mounted:function(){
+        this.$io = io();
+        this.$io.on("hot:created",function(data){
+          this.assets.splice(0,0,data);
+        }.bind(this));
+        
+        Vue.set(this,"server",window.hotline.server);
+      }
+    });
+  </script>
+</body>
+</html>

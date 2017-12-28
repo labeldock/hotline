@@ -1,0 +1,17 @@
+[v-cloak] {
+  display: none;
+}
+
+textarea {
+  width:640px;
+  height:80px;
+}
+
+header {
+  display:block;
+  height:20px;
+  line-height:20px;
+  
+  border-bottom:1px solid silver;
+  margin-bottom:20px;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "hotline",
+  "version": "0.1.0",
+  "description": "Temporary asset passage server",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/nodemon --watch server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/labeldock/hotline.git"
+  },
+  "author": "AHN HO JUNG",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/labeldock/hotline/issues"
+  },
+  "homepage": "https://github.com/labeldock/hotline#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "nodemon": "^1.14.3",
+    "socket.io": "^2.0.4"
+  }
+}
