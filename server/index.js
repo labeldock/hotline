@@ -29,6 +29,7 @@ app.get("/mount",function(req,res){
 
 var connection = io.on("connection", function(socket){
   socket.on("hot:create",function(data){
+    console.log("== hot:created == \n",data);
     connection.emit("hot:created",data);
   });
 });
