@@ -1,31 +1,69 @@
-var fs      = require('fs');
-var path    = require('path');
-var express = require('express');
-var app     = express();
-var http    = require('http');
-var https   = require('https').Server({
-  key:fs.readFileSync(path.resolve(__dirname,'cert/key.pem')),
-  cert:fs.readFileSync(path.resolve(__dirname,'cert/cert.pem'))
-},app);
-
-var io      = require('socket.io')(https);
-
-var server = {
-  ip4v:void 0,
-  protocal:"https",
-  port:9991
+const fs       = require('fs');
+const path     = require('path');
+const express  = require('express');
+//
+const PROTOCOL = process.env.PROTOCOL;
+const PORT     = process.env.PORT;
+//
+const socketIO = require('socket.io');
+let serverSocket;
+let serverProtocol;
+//
+const app = express();
+const server = {
+  ip4v:undefined,
+  protocol:undefined,
+  port:undefined
 };
 
+switch(process.env.PROTOCOL){
+case "https":
+  const [key, cert] = [
+    fs.readFileSync(path.resolve(__dirname,'cert/key.pem')),
+    fs.readFileSync(path.resolve(__dirname,'cert/cert.pem'))
+  ];
+    
+  serverProtocol = require('https').Server({ key, cert },app);
+  serverSocket   = socketIO(serverProtocol);
+    
+  server.protocol = "https";
+  server.port     = 9991
+  
+  require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+    server.ip4v = add;  
+    console.log(server.protocol+"://"+server.ip4v+":"+server.port);
+  });
+    
+  serverProtocol.listen(server.port, function(){  
+    console.log("HTTPS server listening on port " + server.port);
+  });
+  break;
+case "http":
+default:
+  serverProtocol = require('http').Server(app);
+  serverSocket   = socketIO(serverProtocol);
+    
+  server.protocol = "http";
+  server.port     = 9999;
+    
+  require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+    server.ip4v = add;  
+    console.log(server.protocol+"://"+server.ip4v+":"+server.port);
+  });
+  
+  
+  serverProtocol.listen(server.port,function(){
+    console.log('HTTP server listening on port',server.port);
+  });
+  break;
+}
+
+if(!serverProtocol){
+  console.log("something wrent worng");
+  process.exit(1);
+}
+
 var recently = [];
-
-require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-  server.ip4v = add;  
-  console.log(server.protocal+"://"+server.ip4v+":"+server.port);
-});
-
-//http.listen(server.port,function(){
-//    console.log('Express server listening');
-//});
 
 app.use("/",express.static(path.resolve(__dirname,'../public')));
 
@@ -34,8 +72,7 @@ app.get("/mount",function(req,res){
   res.status(200).send("window.hotline="+JSON.stringify(mountdata));
 });
 
-var connection = io.on("connection", function(socket){
-  
+var connection = serverSocket.on("connection", function(socket){
   socket.on("hot:create",function(data){
     console.log("== hot:created == \n",data);
     
@@ -49,6 +86,3 @@ var connection = io.on("connection", function(socket){
   });
 });
 
-https.listen(server.port, function(){  
-  console.log("Https server listening on port " + server.sport);
-});
