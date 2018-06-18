@@ -74,7 +74,7 @@ app.get("/mount",function(req,res){
 
 var connection = serverSocket.on("connection", function(socket){
   socket.on("hot:create",function(data){
-    console.log("== hot:created == \n",data);
+    console.log("== hotline == \n",data);
     
     recently.splice(0,0,data);
     
