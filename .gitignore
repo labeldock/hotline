@@ -60,3 +60,5 @@ typings/
 *.swp
 package-lock.json
 cert
+
+/server/db/*

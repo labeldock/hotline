@@ -1,19 +1,25 @@
+//package
 const fs       = require('fs');
 const path     = require('path');
 const express  = require('express');
-//
-const PROTOCOL = process.env.PROTOCOL;
-const PORT     = process.env.PORT;
-//
 const socketIO = require('socket.io');
+//env
+const PROTOCOL    = process.env.PROTOCOL;
+const PORT        = process.env.PORT;
+const INSTANCE_ID = process.env.INSTANCE_ID;
+//model
+const { Message } = require("./models");
+//connection
 let serverSocket;
 let serverProtocol;
-//
+//application
 const app = express();
+//state
 const server = {
   ip4v:undefined,
   protocol:undefined,
-  port:undefined
+  port:undefined,
+  pmid:INSTANCE_ID
 };
 
 switch(process.env.PROTOCOL){
@@ -62,19 +68,25 @@ var recently = [];
 app.use("/",express.static(path.resolve(__dirname,'../public')));
 
 app.get("/mount",function(req,res){
-  var mountdata = {server:server,recently:recently};
-  res.status(200).send("window.hotline="+JSON.stringify(mountdata));
+  Message.findAll({})
+  .then((recently)=>{
+    //TODO : reverse not.. use onder by
+    res.status(200).send("window.hotline="+JSON.stringify({server,recently:recently.map(o=>o.content).reverse()}));
+  })
+  .catch((e)=>{
+    res.status(500).send({ error: e.message });
+  });
 });
 
 var connection = serverSocket.on("connection", function(socket){
   socket.on("hot:create",function(data){
     console.log("== hotline == \n",data);
+    Message.create({ content: data })
+    //recently.splice(0,0,data);
     
-    recently.splice(0,0,data);
-    
-    if(recently.length > 10) {
-      recently.splice(11,1);
-    }
+    //if(recently.length > 10) {
+    //  recently.splice(11,1);
+    //}
     
     connection.emit("hot:created",data);
   });

@@ -12,7 +12,7 @@
   <div id="app" v-cloak>
     <header>
       <span v-if="server">
-        {{server.protocal}}://{{server.ip4v}}:{{server.port}}
+        Server[{{server.pmid}}]; {{server.protocol}}://{{server.ip4v}}:{{server.port}}
       </span>
     </header>
     <textarea id="textarea" v-model="textarea" @keyup.enter="emitTextarea($event)"></textarea>
@@ -42,8 +42,13 @@
         assets:[],
         server:null,
       },
-      mounted:function(){
+      created:function(){
         this.$io = io();
+        
+        this.$io.on("hot:welcome",function(data){
+          console.log("data",data);
+        }.bind(this));
+        
         this.$io.on("hot:created",function(data){
           this.assets.splice(0,0,data);
         }.bind(this));

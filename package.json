@@ -7,10 +7,13 @@
     "logs": "pm2 monit hotline && echo \"⁉️ Just run 'npm run stop' when you want to stop the server\"",
     "http": "cross-env PROTOCOL=http pm2 start ecosystem.config.js --watch && npm run logs",
     "https": "cross-env PROTOCOL=https pm2 start ecosystem.config.js --watch && npm run logs",
+    "http:cluster": "cross-env PROTOCOL=http pm2 start ecosystem.config.js --watch --env cluster --update-env && npm run logs",
+    "https:cluster": "cross-env PROTOCOL=https pm2 start ecosystem.config.js --watch --env cluster --update-env && npm run logs",
     "start": "npm run http",
     "restart": "pm2 restart hotline",
     "stop": "pm2 delete hotline",
-    "create": "node ./bins/makeHttpsCert",
+    "init": "rimraf ./server/db/*.sqlite3 && runner ./server sequelize db:migrate",
+    "makeHttpsCert": "node ./bins/makeHttpsCert",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,9 +30,13 @@
     "cross-env": "^5.2.0",
     "express": "^4.16.3",
     "pm2": "^2.10.4",
-    "socket.io": "^2.1.1"
+    "sequelize": "^4.37.10",
+    "socket.io": "^2.1.1",
+    "sqlite3": "^4.0.0"
   },
   "devDependencies": {
-    "@sepalang/runner": "^0.7.1"
+    "@sepalang/runner": "^0.7.1",
+    "rimraf": "^2.6.2",
+    "sequelize-cli": "^4.0.0"
   }
 }
