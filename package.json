@@ -7,7 +7,7 @@
     "http": "cross-env PROTOCOL=http nodemon server --watch",
     "https": "cross-env PROTOCOL=https nodemon server --watch",
     "start": "npm run http",
-    "create": "node ./bin/makeHttpsCert",
+    "create": "node ./bins/makeHttpsCert",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
