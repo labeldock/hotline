@@ -7,6 +7,7 @@
     "http": "cross-env PROTOCOL=http nodemon --watch server",
     "https": "cross-env PROTOCOL=https nodemon --watch server",
     "start": "npm run http",
+    "create": "node ./bin/makeHttpsCert",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,5 +25,8 @@
     "express": "^4.16.3",
     "nodemon": "^1.17.5",
     "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "@sepalang/runner": "^0.7.1"
   }
 }
