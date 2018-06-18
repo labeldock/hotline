@@ -29,12 +29,7 @@ case "https":
   server.protocol = "https";
   server.port     = 9991
   
-  require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-    server.ip4v = add;  
-    console.log(server.protocol+"://"+server.ip4v+":"+server.port);
-  });
-    
-  serverProtocol.listen(server.port, function(){  
+  serverProtocol.listen(server.port, function(){
     console.log("HTTPS server listening on port " + server.port);
   });
   break;
@@ -45,15 +40,14 @@ default:
     
   server.protocol = "http";
   server.port     = 9999;
-    
-  require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-    server.ip4v = add;  
-    console.log(server.protocol+"://"+server.ip4v+":"+server.port);
-  });
-  
   
   serverProtocol.listen(server.port,function(){
-    console.log('HTTP server listening on port',server.port);
+    require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+      server.ip4v = add;  
+      setTimeout(()=>{
+        console.log(server.protocol+"://"+server.ip4v+":"+server.port);
+      },1000);
+    });
   });
   break;
 }

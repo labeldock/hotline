@@ -1,12 +1,15 @@
 {
   "name": "hotline",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Temporary asset passage server",
   "main": "server/index.js",
   "scripts": {
-    "http": "cross-env PROTOCOL=http nodemon server --watch",
-    "https": "cross-env PROTOCOL=https nodemon server --watch",
+    "logs": "pm2 monit hotline && echo \"⁉️ Just run 'npm run stop' when you want to stop the server\"",
+    "http": "cross-env PROTOCOL=http pm2 start ecosystem.config.js --watch && npm run logs",
+    "https": "cross-env PROTOCOL=https pm2 start ecosystem.config.js --watch && npm run logs",
     "start": "npm run http",
+    "restart": "pm2 restart hotline",
+    "stop": "pm2 delete hotline",
     "create": "node ./bins/makeHttpsCert",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,7 +26,7 @@
   "dependencies": {
     "cross-env": "^5.2.0",
     "express": "^4.16.3",
-    "nodemon": "^1.17.5",
+    "pm2": "^2.10.4",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
