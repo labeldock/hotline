@@ -1,5 +1,7 @@
 # hotline
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/labeldock/hotline.svg)](https://greenkeeper.io/)
+
 ## install
 ```
 npm install
